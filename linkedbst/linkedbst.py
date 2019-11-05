@@ -138,33 +138,89 @@ class LinkedBST(AbstractCollection):
             recurse(self._root)
         self._size+=1
 
+    def add_list(self,item):
+        for i in item:
+            self.add(i)
+
     def delete(self,item):
         cursor = None
         reference = ""
-        def search(node):
-            global cursor
-            global reference
-
+        def search_node(node):
+            #search the node to be deleted and return
+            #it and it's parent and reference
+            nonlocal cursor
+            nonlocal reference
             if node.data==item:
-                return cursor,reference
+                return node,cursor,reference
             elif node.data>item:
                 cursor=node
                 reference="left"
-                search(node.left)
+                node,cursor,reference=search_node(node.left)
+                return node, cursor, reference
             else:
                 cursor=node
                 reference="right"
-                search(node.right)
+                node,cursor,reference=search_node(node.right)
+                return node, cursor, reference
 
-        cursor,reference=search(self._root)
+
+        def search_left_subtree_max(node):
+            #search the left subtree of the node
+            #and return the max
+            if node.left.right==None:
+                cursor=node
+                reference="left"
+                return cursor,reference,node.left
+
+            else:
+                cursor=node.left
+                reference="right"
+                def recurse(node):
+                    if node.right!=None:
+                        nonlocal cursor
+                        nonlocal reference
+                        cursor = node
+                        cursor,reference,node=recurse(node.right)
+                    return cursor,reference,node
+                return(recurse(node.left))
+
+
+        node,cursor,reference=search_node(self._root)
         if cursor==None:
-            """The root need to be delete"""
+            #The root need to be delete"""
             self._root=None
-        elif
 
+        elif node.left==node.right==None:
+            #The node has no subtree"""
+            if reference=="left":
+                cursor.left=None
+            else:
+                cursor.right=None
 
+        elif node.left==None or node.right==None:
+            #The node has left subtree or right subtree"""
+            if node.left==None:
+                if reference == "left":
+                    cursor.left = node.right
+                else:
+                    cursor.left = node.right
+            else:
+                if reference == "left":
+                    cursor.right = node.left
+                else:
+                    cursor.right = node.left
 
-self._size-=1
+        else:
+            #The node has both left subtree and right subtree
+            cursor,reference,node_max=search_left_subtree_max(node)
+            if reference=="left":
+                node.data=node_max.data
+                node.left=None
+            else:
+                node.data=node_max.data
+                cursor.right=None
+
+        self._size-=1
 
 
 
