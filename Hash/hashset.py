@@ -83,6 +83,9 @@ class HashSet(AbstractCollection,AbstractSet):
             self._size+=1
 
     def remove(self,item):
+        """Precondition: item is in self.
+        Raises: KeyError if item is not in self.
+        Postcondition: item is removed from self."""
         if not item in self:
             raise KeyError(str(item)+"is not in the set.")
         else:
@@ -90,6 +93,9 @@ class HashSet(AbstractCollection,AbstractSet):
                 self._item[self._index]=None
             else:
                 self._priorNode.next=self._foundNode.next
+        self._size-=1
+        return str(item)+"has been removed from the set."
+
 
 
 
