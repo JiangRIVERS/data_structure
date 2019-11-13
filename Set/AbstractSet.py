@@ -41,4 +41,3 @@ class AbstractSet(object):
         for item in self:
             if not item in other:
                 return False
-        return True
